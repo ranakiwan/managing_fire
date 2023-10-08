@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Map View Filter</title>
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Include Leaflet.heat plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/leaflet-heat.js"></script>
+</head>
+<body>
+    <!-- Create a div to hold the map -->
+    <div id="map" style="height: 600px;"></div>
+
+    <!-- Create filter options using radio buttons -->
+    <div id="mapFilter">
+        <label><input type="radio" name="mapView" value="street" checked> Street Map</label>
+        <label><input type="radio" name="mapView" value="birdseye"> Bird's Eye View</label>
+        <label><input type="radio" name="mapView" value="thermal"> Thermal Map</label>
+    </div>
+
+    <!-- Include your JavaScript code here -->
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([51.505, -0.09], 13); // Set the initial center and zoom level
+
+        // Create base tile layers
+        var streetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        });
+
+        // Customize the "Bird's Eye View" by changing the tile layer source
+        var birdseyeMapLayer = L.tileLayer('YOUR_CUSTOM_BIRDSEYE_TILE_URL', {
+            // Customize the options as needed
+        });
+
+        // Sample data for the thermal map (latitude, longitude, intensity)
+        var thermalData = [
+            [51.5, -0.09, 0.5],
+            // Add more data points as needed
+        ];
+
+        // Create a HeatLayer for the thermal map
+        var thermalLayer = L.heatLayer(thermalData, { radius: 25 }).addTo(map);
+
+        // Create an object to store the map views
+        var mapViews = {
+            "Street Map": streetMapLayer,
+            "Bird's Eye View": birdseyeMapLayer,
+            "Thermal Map": thermalLayer
+        };
+
+        // Add the default street map layer to the map
+        streetMapLayer.addTo(map);
+
+        // Add layer control to the map
+        L.control.layers(mapViews).addTo(map);
+
+        // Handle the filter change event
+        var mapFilter = document.getElementById('mapFilter');
+        mapFilter.addEventListener('change', function () {
+            var selectedMapView = document.querySelector('input[name="mapView"]:checked').value;
+            // Remove existing layers from the map
+            map.eachLayer(function (layer) {
+                map.removeLayer(layer);
+            });
+            // Add the selected layer to the map
+            mapViews[selectedMapView].addTo(map);
+        });
+    </script>
+</body>
+</html>

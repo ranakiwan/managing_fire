@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Weather Map</title>
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+</head>
+<body>
+    <div id="map" style="height: 600px;"></div>
+
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([33.8547, 35.8623], 5); // Set the initial center and zoom level
+
+        // Add a tile layer (you can use various map providers)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Sample data for different weather layers
+        var humidityData = 20
+        var temperatureData = 20/* Insert your temperature data here */
+        var windData = 20/* Insert your wind data here */
+        var cloudData = 20/* Insert your cloud data here */
+
+        // Create overlay layers
+        var humidityLayer = L.layerGroup(humidityData.map(h => L.marker([h.lat, h.lon]).bindPopup(`Humidity: ${h.value}%`)));
+        var temperatureLayer = L.layerGroup(temperatureData.map(t => L.marker([t.lat, t.lon]).bindPopup(`Temperature: ${t.value}°C`)));
+        var windLayer = L.layerGroup(windData.map(w => L.marker([w.lat, w.lon]).bindPopup(`Wind: ${w.value} m/s`)));
+        var cloudLayer = L.layerGroup(cloudData.map(c => L.marker([c.lat, c.lon]).bindPopup(`Cloud Cover: ${c.value}%`)));
+
+        // Create an object to hold the overlay layers
+        var overlayMaps = {
+            "Humidity": humidityLayer,
+            "Temperature": temperatureLayer,
+            "Wind": windLayer,
+            "Clouds": cloudLayer
+        };
+
+        // Add a layer control to toggle between overlay layers
+        L.control.layers(null, overlayMaps).addTo(map);
+    </script>
+</body>
+</html>
